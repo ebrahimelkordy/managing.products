@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Customer Accounts</title>
+    <link rel="stylesheet" href="mang.css" />
+  </head>
+  <body>
+    <div id="cruds">
+      <div id="head">
+        <h1>Customer Accounts</h1>
+      </div>
+
+      <div id="inputs">
+        <input type="text" id="customerName" placeholder="Customer Name" />
+        <input type="email" id="customerEmail" placeholder="Customer Email" />
+        <input type="number" id="customerPhone" placeholder="Customer Phone" />
+        <button id="addCustomer">Add Customer</button>
+        <button id="clearCustomers" onclick="deleteAllCustomers()">Clear All</button>
+      </div>
+
+      <div id="outputs">
+        <table id="customerTable">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Phone</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="customerBody">
+            <!-- ...dynamic content will be inserted here... -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <script src="customers.js"></script>
+    <script>
+      function viewCustomerAccount(index) {
+        window.location.href = `customer_account.html?customerIndex=${index}`;
+      }
+    </script>
+  </body>
+</html>

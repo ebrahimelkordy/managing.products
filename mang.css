@@ -1,0 +1,345 @@
+body {
+    background: linear-gradient(135deg, #121212 0%, #1a1a1a 100%);
+    font-family: 'Roboto', sans-serif;
+    /* professional font */
+    overflow-y: auto !important;
+    /* Force vertical scrolling */
+}
+
+#cruds {
+    margin: auto;
+    padding: 20px;
+    background-color: #1e1e1e;
+    /* updated dark background */
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.7);
+    border: 1px solid #333;
+    position: relative;
+    /* removed extra semicolon */
+    max-width: 100%;
+    margin: 30px auto;
+    scroll-margin-top: 20px;
+    /* Add spacing when scrolled into view */
+}
+
+/* Update header area */
+#head h1 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #f0f0f0;
+    font-size: 2.5em;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 30px;
+    color: #ffffff;
+}
+
+/* Update inputs container */
+#inputs {
+    width: 70%;
+    margin: auto;
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: column;
+    gap: 10px;
+    justify-content: center;
+    margin-bottom: 20px;
+    background-color: #222;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+}
+
+#inputs input {
+    padding: 14px 18px;
+    border: 2px solid #444;
+    border-radius: 8px;
+    width: 60%;
+    margin: 12px auto;
+    background: linear-gradient(145deg, #2e2e2e, #1c1c1c);
+    color: #f0f0f0;
+    font-size: 1em;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+#inputs input:focus {
+    border-color: #00aaff;
+    box-shadow: 0 0 10px rgba(0, 170, 255, 0.8);
+    outline: none;
+}
+
+/* New button styling */
+#inputs button {
+    flex: 1;
+    margin: 0;
+    padding: 12px 20px;
+    background: linear-gradient(145deg, #00509e, #003366);
+    color: #f0f0f0;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+
+/* Arrange buttons in a flex container.
+   If buttons need to be grouped, you could wrap them in a container with class .button-group */
+#inputs .button-group {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+}
+
+/* Hover effect for buttons */
+#inputs button:hover {
+    background: linear-gradient(145deg, #0074ff, #00509e);
+    transform: scale(1.05);
+}
+
+#clear {
+    background: linear-gradient(145deg, #ff4d4d, #cc0000);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 12px 20px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+
+#clear:hover {
+    background: linear-gradient(145deg, #ff6666, #e60000);
+    transform: scale(1.05);
+}
+
+#totalprice {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+}
+
+#totalprice input {
+    border: 1px solid #444;
+    /* improved border for dark theme */
+    border-radius: 5px;
+    display: flex;
+    flex-direction: row;
+    margin: auto;
+    background-color: #205d79;
+    color: #e0e0e0;
+}
+
+/* Update table styling in outputs */
+#outputs {
+    margin-top: 20px;
+    width: 100%;
+    padding: 15px;
+    background-color: #1a1a1a;
+    border-radius: 5px;
+    border-top: 1px solid #444;
+    overflow-x: auto;
+    /* Add horizontal scroll */
+}
+
+/* New table design for outputs */
+#outputs table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+}
+
+#outputs table th,
+#outputs table td {
+    overflow: hidden;
+    /* Prevent content overflow */
+    text-overflow: ellipsis;
+    /* Add ellipsis for long text */
+    white-space: nowrap;
+    /* Prevent wrapping */
+    padding: 5px 10px;
+    /* Reduce padding to decrease row height */
+    border: 1px solid #444;
+    text-align: center;
+    word-wrap: break-word;
+    /* Ensure content wraps properly */
+    height: 40px;
+    /* Set a fixed height for rows */
+}
+
+#outputs table th {
+    background-color: #00509e;
+    color: #fff;
+    font-weight: bold;
+}
+
+#outputs table td {
+    background-color: #2a2a2a;
+    color: #e0e0e0;
+}
+
+#outputs table tr:nth-child(even) {
+    background-color: #242424;
+}
+
+#outputs table tr:hover {
+    background-color: #333;
+}
+
+#outputs table th:nth-child(8),
+#outputs table td:nth-child(8) {
+    text-align: center;
+    color: #f0f0f0;
+}
+
+#outputs table input[type="number"] {
+    width: 60px;
+    padding: 5px;
+    text-align: center;
+    border: 1px solid #444;
+    border-radius: 5px;
+    background-color: #2a2a2a;
+    color: #f0f0f0;
+}
+
+#outputs table input[type="number"]:focus {
+    border-color: #00aaff;
+    outline: none;
+}
+
+#outputs table select,
+#outputs table input[type="number"] {
+    margin: 5px 0;
+    padding: 5px;
+    border: 1px solid #444;
+    border-radius: 5px;
+    background-color: #2a2a2a;
+    color: #f0f0f0;
+    width: 100px;
+}
+
+#outputs table select:focus,
+#outputs table input[type="number"]:focus {
+    border-color: #00aaff;
+    outline: none;
+}
+
+#outputs table button {
+    margin-top: 5px;
+    padding: 5px 10px;
+    border: none;
+    border-radius: 5px;
+    background-color: #00509e;
+    color: #fff;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+#outputs table button:hover {
+    background-color: #0074ff;
+}
+
+input:focus {
+    background-color: #444;
+    transform: scale(1.05);
+}
+
+#search {
+    width: 80%;
+    margin: auto;
+}
+
+;
+
+#searchbyname,
+#searchbycategory {
+    width: 50%;
+
+}
+
+.searchbtn {
+    display: flex;
+}
+
+.tdf {
+    display: flex;
+    flex-direction: column;
+}
+
+/* Toast notifications */
+.toast {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: #333;
+    color: #fff;
+    padding: 10px 20px;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+    opacity: 1;
+    transition: opacity 0.5s ease;
+    z-index: 1000;
+}
+
+.toast.success {
+    background-color: #28a745;
+}
+
+.toast.error {
+    background-color: #dc3545;
+}
+
+/* Navigation styling */
+nav {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+nav a {
+    color: #00aaff;
+    text-decoration: none;
+    font-size: 1.2em;
+    margin: 0 10px;
+    transition: color 0.3s ease;
+}
+
+nav a:hover {
+    color: #0074ff;
+}
+
+/* Dropdown styling */
+#customerSelect {
+    padding: 10px;
+    border: 2px solid #444;
+    border-radius: 8px;
+    width: 60%;
+    margin: 12px auto;
+    background: linear-gradient(145deg, #2e2e2e, #1c1c1c);
+    color: #f0f0f0;
+    font-size: 1em;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+#customerSelect:focus {
+    border-color: #00aaff;
+    box-shadow: 0 0 10px rgba(0, 170, 255, 0.8);
+    outline: none;
+}
+
+/* Account details styling */
+#accountDetails {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+#accountDetails h2 {
+    font-size: 2em;
+    color: #00aaff;
+}
+
+#accountDetails p {
+    font-size: 1.2em;
+    color: #f0f0f0;
+}

@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Customer Account</title>
+    <link rel="stylesheet" href="mang.css" />
+  </head>
+  <body>
+    <div id="cruds">
+      <div id="head">
+        <h1>Customer Account</h1>
+      </div>
+
+      <div id="accountDetails">
+        <h2 id="customerName"></h2>
+        <p id="customerEmail"></p>
+        <p id="customerPhone"></p>
+      </div>
+
+      <div id="outputs">
+        <h3>Products</h3>
+        <table id="customerProductsTable">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Price</th>
+              <th>Discount</th>
+              <th>Ads</th>
+              <th>Taxs</th>
+              <th>Total</th>
+              <th>Category</th>
+            </tr>
+          </thead>
+          <tbody id="customerProductsBody">
+            <!-- ...dynamic content will be inserted here... -->
+          </tbody>
+        </table>
+      </div>
+
+      <button onclick="printAccount()">Print Account</button>
+    </div>
+    <script src="customer_account.js"></script>
+  </body>
+</html>
