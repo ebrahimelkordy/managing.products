@@ -28,6 +28,51 @@ function searchh(id) {
     display();
 }
 
+function searchpoint(value) {
+    value = value.trim().toLowerCase();
+    let table = '';
+    data.forEach((product, i) => {
+        if (
+            (srmood === 'name' && product.name.toLowerCase().includes(value)) ||
+            (srmood === 'category' && product.category.toLowerCase().includes(value))
+        ) {
+            let customers = JSON.parse(localStorage.getItem('customers')) || [];
+            let customerName = product.customerIndex !== null ? customers[product.customerIndex]?.name || "Unassigned" : "In Stock";
+            table += `
+            <tr>
+                <td>${product.name}</td>
+                <td>${product.price}</td>
+                <td>${product.discount}</td>
+                <td>${product.ads}</td>
+                <td>${product.taxs}</td>
+                <td>${product.total}</td>
+                <td>${product.category}</td>
+                <td>
+                    <input type="number" value="${product.quantity}" onchange="updateProductQuantity(${i}, parseInt(this.value))" />
+                </td>
+                <td>${customerName}</td>
+                <td>${product.timestamp || "N/A"}</td>
+                <td>
+                    ${product.customerIndex === null ? `
+                        <button onclick="showAvailableStock(${i})">Show Stock</button>
+                        <div>
+                            <select id="customerSelect_${i}">
+                                <option value="">Select Customer</option>
+                                ${customers.map((customer, index) => `<option value="${index}">${customer.name}</option>`).join('')}
+                            </select>
+                            <input type="number" id="assignQuantity_${i}" placeholder="Quantity" min="1" />
+                            <button onclick="assignProductToCustomer(${i}, parseInt(document.getElementById('customerSelect_${i}').value), parseInt(document.getElementById('assignQuantity_${i}').value))">Assign</button>
+                        </div>
+                    ` : ""}
+                    <button onclick="delet(${i})">delete</button>
+                    <button onclick="update(${i})">update</button>
+                </td>
+            </tr>`;
+        }
+    });
+    document.getElementById('tbody').innerHTML = table || '<tr><td colspan="11">No results found</td></tr>';
+}
+
 window.onload = function () {
     const cruds = document.getElementById('cruds');
     if (cruds) {
@@ -160,6 +205,7 @@ if (localStorage.products != null) {
     data = JSON.parse(localStorage.products);
 } else {
     data = [];
+
 }
 
 function assignProductToCustomer(productIndex, customerIndex, quantity) {
@@ -204,9 +250,13 @@ function display() {
     let table = "";
     let customers = JSON.parse(localStorage.getItem('customers')) || [];
     const tbody = document.getElementById("tbody");
-    tbody.innerHTML = "";
+    tbody.innerHTML = ""; // Clear existing content
+
     data.forEach((product, i) => {
-        let customerName = product.customerIndex !== null ? customers[product.customerIndex]?.name || "Unassigned" : "In Stock";
+        let status = product.customerIndex !== null
+            ? `With Customer: ${customers[product.customerIndex]?.name || "Unknown"}`
+            : "In Stock";
+
         table += `
         <tr>
             <td>${product.name}</td>
@@ -219,7 +269,7 @@ function display() {
             <td>
                 <input type="number" value="${product.quantity}" onchange="updateProductQuantity(${i}, parseInt(this.value))" />
             </td>
-            <td>${customerName}</td>
+            <td>${status}</td> <!-- New column for stock/customer status -->
             <td>${product.timestamp || "N/A"}</td>
             <td>
                 ${product.customerIndex === null ? `
@@ -238,6 +288,7 @@ function display() {
             </td>
         </tr>`;
     });
+
     tbody.innerHTML = table || '<tr><td colspan="11">No products found</td></tr>';
 }
 

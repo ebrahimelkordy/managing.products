@@ -149,23 +149,84 @@ body {
     border-radius: 8px;
     overflow: hidden;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
-    table-layout: fixed;
-    /* Fix table layout to prevent shrinking */
+    table-layout: auto;
+    /* Allow columns to adjust based on content */
 }
 
-/* Set specific widths for the "Actions" and "Timestamp" columns */
+/* Set specific widths for each column */
+#outputs table th:nth-child(1),
+/* Name column */
+#outputs table td:nth-child(1) {
+    width: 15%;
+}
+
+#outputs table th:nth-child(2),
+/* Price column */
+#outputs table td:nth-child(2) {
+    width: 10%;
+}
+
+#outputs table th:nth-child(3),
+/* Discount column */
+#outputs table td:nth-child(3) {
+    width: 10%;
+}
+
+#outputs table th:nth-child(4),
+/* Ads column */
+#outputs table td:nth-child(4) {
+    width: 10%;
+}
+
+#outputs table th:nth-child(5),
+/* Taxs column */
+#outputs table td:nth-child(5) {
+    width: 10%;
+}
+
+#outputs table th:nth-child(6),
+/* Total column */
+#outputs table td:nth-child(6) {
+    width: 10%;
+}
+
+#outputs table th:nth-child(7),
+/* Category column */
+#outputs table td:nth-child(7) {
+    width: 15%;
+}
+
+#outputs table th:nth-child(8),
+/* Quantity column */
+#outputs table td:nth-child(8) {
+    width: 10%;
+}
+
+/* Set specific width for the "Status" column */
+#outputs table th:nth-child(9),
+#outputs table td:nth-child(9) {
+    width: 15%;
+    text-align: center;
+}
+
+/* Ensure text inside the "Status" column does not overflow */
+#outputs table td:nth-child(9) {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
 #outputs table th:nth-child(10),
 /* Timestamp column */
 #outputs table td:nth-child(10) {
     width: 15%;
-    /* Adjust width as needed */
 }
 
 #outputs table th:nth-child(11),
 /* Actions column */
 #outputs table td:nth-child(11) {
     width: 20%;
-    /* Adjust width as needed */
+    /* Ensure enough space for buttons */
 }
 
 /* Ensure text inside table headers and cells does not overflow */
@@ -180,31 +241,46 @@ body {
     word-wrap: break-word;
 }
 
+/* Style buttons inside the "Actions" column */
+#outputs table td:nth-child(11) button {
+    margin: 5px;
+    padding: 5px 10px;
+    border: none;
+    border-radius: 5px;
+    background-color: #00509e;
+    color: #fff;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+#outputs table td:nth-child(11) button:hover {
+    background-color: #0074ff;
+}
+
+/* Add hover effect for rows */
+#outputs table tr:hover {
+    background-color: #333;
+}
+
+/* Add alternating row colors */
+#outputs table tr:nth-child(even) {
+    background-color: #242424;
+}
+
+/* Style table headers */
 #outputs table th {
     background-color: #00509e;
     color: #fff;
     font-weight: bold;
 }
 
+/* Style table cells */
 #outputs table td {
     background-color: #2a2a2a;
     color: #e0e0e0;
 }
 
-#outputs table tr:nth-child(even) {
-    background-color: #242424;
-}
-
-#outputs table tr:hover {
-    background-color: #333;
-}
-
-#outputs table th:nth-child(8),
-#outputs table td:nth-child(8) {
-    text-align: center;
-    color: #f0f0f0;
-}
-
+/* Style input fields inside table cells */
 #outputs table input[type="number"] {
     width: 60px;
     padding: 5px;
@@ -220,23 +296,7 @@ body {
     outline: none;
 }
 
-#outputs table select,
-#outputs table input[type="number"] {
-    margin: 5px 0;
-    padding: 5px;
-    border: 1px solid #444;
-    border-radius: 5px;
-    background-color: #2a2a2a;
-    color: #f0f0f0;
-    width: 100px;
-}
-
-#outputs table select:focus,
-#outputs table input[type="number"]:focus {
-    border-color: #00aaff;
-    outline: none;
-}
-
+/* Style buttons inside table cells */
 #outputs table button {
     margin-top: 5px;
     padding: 5px 10px;
