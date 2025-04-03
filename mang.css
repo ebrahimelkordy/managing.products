@@ -141,7 +141,7 @@ body {
     /* Add horizontal scroll */
 }
 
-/* New table design for outputs */
+/* Ensure table layout is consistent */
 #outputs table {
     width: 100%;
     border-collapse: collapse;
@@ -149,24 +149,35 @@ body {
     border-radius: 8px;
     overflow: hidden;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+    table-layout: fixed;
+    /* Fix table layout to prevent shrinking */
 }
 
+/* Set specific widths for the "Actions" and "Timestamp" columns */
+#outputs table th:nth-child(10),
+/* Timestamp column */
+#outputs table td:nth-child(10) {
+    width: 15%;
+    /* Adjust width as needed */
+}
+
+#outputs table th:nth-child(11),
+/* Actions column */
+#outputs table td:nth-child(11) {
+    width: 20%;
+    /* Adjust width as needed */
+}
+
+/* Ensure text inside table headers and cells does not overflow */
 #outputs table th,
 #outputs table td {
     overflow: hidden;
-    /* Prevent content overflow */
     text-overflow: ellipsis;
-    /* Add ellipsis for long text */
     white-space: nowrap;
-    /* Prevent wrapping */
-    padding: 5px 10px;
-    /* Reduce padding to decrease row height */
+    padding: 10px;
     border: 1px solid #444;
     text-align: center;
     word-wrap: break-word;
-    /* Ensure content wraps properly */
-    height: 40px;
-    /* Set a fixed height for rows */
 }
 
 #outputs table th {

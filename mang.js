@@ -13,7 +13,6 @@ let searchinpot = document.getElementById("search");
 let searchcategory = document.getElementById('searchbycategory');
 let creat = document.getElementById('creat');
 let mood = 'creat';
-
 let srmood = 'name';
 
 function searchh(id) {
@@ -29,7 +28,6 @@ function searchh(id) {
     display();
 }
 
-// Scroll to the top of the page on refresh
 window.onload = function () {
     const cruds = document.getElementById('cruds');
     if (cruds) {
@@ -40,16 +38,14 @@ window.onload = function () {
     } else {
         window.scrollTo(0, 0);
     }
-    display(); // Call display to show products on page load
+    display();
 };
 
-// Function to get the current timestamp
 function getCurrentTimestamp() {
     const now = new Date();
     return now.toLocaleString();
 }
 
-// Improved create/update function
 creat.addEventListener('click', function () {
     if (mood === 'update') {
         if (tmb !== undefined && tmb >= 0 && tmb < data.length) {
@@ -65,7 +61,6 @@ creat.addEventListener('click', function () {
                 customerIndex: null,
                 timestamp: getCurrentTimestamp()
             };
-
             data[tmb] = product;
             mood = 'creat';
             creat.innerHTML = "add";
@@ -77,7 +72,6 @@ creat.addEventListener('click', function () {
         }
     } else {
         if (!validateInputs()) return;
-
         let product = {
             name: productName.value.trim(),
             price: parseFloat(price.value),
@@ -90,10 +84,8 @@ creat.addEventListener('click', function () {
             customerIndex: null,
             timestamp: getCurrentTimestamp()
         };
-
         if (mood === 'creat') {
             let existingProduct = data.find(p => p.name === product.name && p.category === product.category && p.customerIndex === null);
-
             if (existingProduct) {
                 if (confirm("Do you want to add the new quantity with the same price as the existing product?")) {
                     product.price = existingProduct.price;
@@ -102,7 +94,7 @@ creat.addEventListener('click', function () {
                 existingProduct.quantity += product.quantity;
                 existingProduct.timestamp = getCurrentTimestamp();
             } else {
-                data.push(product); // Add new product to the array
+                data.push(product);
             }
         } else {
             if (tmb !== undefined && tmb >= 0 && tmb < data.length) {
@@ -114,14 +106,12 @@ creat.addEventListener('click', function () {
                 quantity.style.display = 'block';
             }
         }
-
-        localStorage.setItem('products', JSON.stringify(data)); // Save updated data to localStorage
+        localStorage.setItem('products', JSON.stringify(data));
         clearInputs();
-        display(); // Refresh the table to show the new product
+        display();
     }
 });
 
-// Function to clear input fields
 function clearInputs() {
     productName.value = "";
     price.value = "";
@@ -133,7 +123,6 @@ function clearInputs() {
     category.value = "";
 }
 
-// Improved validation function
 function validateInputs() {
     const errors = [];
     if (!productName.value || productName.value.trim().length < 2) {
@@ -145,7 +134,6 @@ function validateInputs() {
     if (!category.value.trim()) {
         errors.push('Category is required');
     }
-
     if (errors.length > 0) {
         alert(errors.join('\n'));
         return false;
@@ -153,14 +141,12 @@ function validateInputs() {
     return true;
 }
 
-// Improved total calculation
 function gettotal() {
     if (price.value !== "") {
         const priceVal = parseFloat(price.value) || 0;
         const adsVal = parseFloat(ads.value) || 0;
         const taxsVal = parseFloat(taxs.value) || 0;
         const discountVal = parseFloat(discount.value) || 0;
-
         let totalprice = priceVal + adsVal + taxsVal - discountVal;
         totalprice = Math.max(0, totalprice);
         total.innerText = "Total Price: " + totalprice.toFixed(2);
@@ -173,65 +159,52 @@ let data;
 if (localStorage.products != null) {
     data = JSON.parse(localStorage.products);
 } else {
-    data = []; // Ensure the data array is initialized
+    data = [];
 }
 
-// Function to assign product to a customer
 function assignProductToCustomer(productIndex, customerIndex, quantity) {
     if (isNaN(customerIndex) || customerIndex < 0 || customerIndex >= JSON.parse(localStorage.getItem('customers')).length) {
         alert("Please select a valid customer.");
         return;
     }
-
     if (isNaN(quantity) || quantity <= 0) {
         alert("Please enter a valid quantity.");
         return;
     }
-
     let product = data[productIndex];
     if (product.quantity < quantity) {
         alert(`Insufficient stock for product: ${product.name}`);
         return;
     }
-
     product.quantity -= quantity;
-
-    // Create a new product entry for the customer
     let customerProduct = { ...product, quantity, customerIndex };
     data.push(customerProduct);
-
     if (product.quantity === 0) {
-        data.splice(productIndex, 1); // Remove product from stock if quantity is zero
+        data.splice(productIndex, 1);
     }
-
     localStorage.setItem('products', JSON.stringify(data));
     display();
     showToast("Product assigned to customer successfully!");
 }
 
-// Function to display available stock for a product
 function showAvailableStock(productIndex) {
     if (productIndex < 0 || productIndex >= data.length) {
         alert("Invalid product index");
         return;
     }
-
     const product = data[productIndex];
     if (product.customerIndex !== null) {
         alert(`This product is already assigned to a customer.`);
         return;
     }
-
     alert(`Available stock for "${product.name}": ${product.quantity}`);
 }
 
-// Ensure the display function is properly implemented
 function display() {
     let table = "";
     let customers = JSON.parse(localStorage.getItem('customers')) || [];
     const tbody = document.getElementById("tbody");
-    tbody.innerHTML = ""; // Clear existing content
-
+    tbody.innerHTML = "";
     data.forEach((product, i) => {
         let customerName = product.customerIndex !== null ? customers[product.customerIndex]?.name || "Unassigned" : "In Stock";
         table += `
@@ -265,36 +238,17 @@ function display() {
             </td>
         </tr>`;
     });
-
     tbody.innerHTML = table || '<tr><td colspan="11">No products found</td></tr>';
 }
 
-// Ensure the display function is called after loading data
-window.onload = function () {
-    const cruds = document.getElementById('cruds');
-    if (cruds) {
-        cruds.scrollTo({
-            top: 0,
-            behavior: 'smooth'
-        });
-    } else {
-        window.scrollTo(0, 0);
-    }
-    display(); // Call display to show products on page load
-};
-
-// Fix the "Update" functionality
 function update(i) {
     if (i < 0 || i >= data.length) {
         alert('Invalid product index');
         return;
     }
-
     mood = 'update';
     tmb = i;
     const product = data[i];
-
-    // Populate the input fields with the selected product's data
     productName.value = product.name;
     price.value = product.price;
     discount.value = product.discount;
@@ -303,25 +257,19 @@ function update(i) {
     total.innerText = `Total Price: ${product.total}`;
     category.value = product.category;
     quantity.value = product.quantity;
-
-    // Change the button text to "Update"
     creat.innerHTML = 'Update';
     quantity.style.display = 'none';
-
-    // Scroll to the top of the page
     window.scrollTo({
         top: 0,
         behavior: 'smooth'
     });
 }
 
-// Fix the "Clear All" functionality
 function deletall() {
     if (data.length === 0) {
         alert("No data to delete");
         return;
     }
-
     if (confirm('Are you sure you want to delete all items?')) {
         data = [];
         localStorage.setItem('products', JSON.stringify(data));
@@ -330,13 +278,11 @@ function deletall() {
     }
 }
 
-// Fix the "Export to CSV" functionality
 function exportToCSV() {
     if (data.length === 0) {
         alert("No data to export");
         return;
     }
-
     let csvContent = "data:text/csv;charset=utf-8,";
     csvContent += "Name,Price,Discount,Ads,Taxs,Total,Category,Quantity,Customer,Timestamp\n";
     let customers = JSON.parse(localStorage.getItem('customers')) || [];
@@ -344,7 +290,6 @@ function exportToCSV() {
         let customerName = product.customerIndex !== null ? customers[product.customerIndex]?.name || "Unassigned" : "In Stock";
         csvContent += `${product.name},${product.price},${product.discount},${product.ads},${product.taxs},${product.total},${product.category},${product.quantity},${customerName},${product.timestamp || "N/A"}\n`;
     });
-
     const encodedUri = encodeURI(csvContent);
     const link = document.createElement("a");
     link.setAttribute("href", encodedUri);
