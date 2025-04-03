@@ -122,6 +122,12 @@ if (localStorage.products != null) {
     data = []; // Ensure the data array is initialized
 }
 
+// Function to get the current timestamp
+function getCurrentTimestamp() {
+    const now = new Date();
+    return now.toLocaleString(); // Format: "MM/DD/YYYY, HH:MM:SS AM/PM"
+}
+
 // Improved create/update function
 creat.addEventListener('click', function () {
     if (!validateInputs()) return;
@@ -135,7 +141,8 @@ creat.addEventListener('click', function () {
         total: parseFloat(total.innerText.replace("Total Price: ", "")) || 0,
         quantity: parseInt(quantity.value) || 1, // Keep the entered quantity
         category: category.value.trim(),
-        customerIndex: null
+        customerIndex: null,
+        timestamp: getCurrentTimestamp() // Add timestamp
     };
 
     if (mood === 'creat') {
@@ -147,12 +154,14 @@ creat.addEventListener('click', function () {
                 product.total = (existingProduct.price + (existingProduct.ads || 0) + (existingProduct.taxs || 0) - (existingProduct.discount || 0)) * product.quantity;
             }
             existingProduct.quantity += product.quantity; // Add new quantity to existing product
+            existingProduct.timestamp = getCurrentTimestamp(); // Update timestamp
         } else {
             data.push(product); // Add new product to the array
         }
     } else {
         if (tmb !== undefined && tmb >= 0 && tmb < data.length) {
             product.quantity = data[tmb].quantity; // Preserve the original quantity
+            product.timestamp = getCurrentTimestamp(); // Update timestamp
             data[tmb] = product;
             mood = 'creat';
             creat.innerHTML = "add";
@@ -287,6 +296,7 @@ function display() {
                 <input type="number" value="${product.quantity}" onchange="updateProductQuantity(${i}, parseInt(this.value))" />
             </td>
             <td>${customerName}</td>
+            <td>${product.timestamp || "N/A"}</td>
             <td>
                 ${product.customerIndex === null ? `
                     <button onclick="showAvailableStock(${i})">Show Stock</button>
@@ -305,17 +315,19 @@ function display() {
         </tr>`;
     });
 
-    tbody.innerHTML = table || '<tr><td colspan="10">No products found</td></tr>';
+    tbody.innerHTML = table || '<tr><td colspan="11">No products found</td></tr>';
     showCount();
 }
 
 // Initial display of data
 display();
 
+// Update delete function to log timestamps
 function delet(i) {
     if (!confirm('Are you sure you want to delete this item?')) return;
 
     if (i >= 0 && i < data.length) {
+        console.log(`Deleted product: ${data[i].name} at ${getCurrentTimestamp()}`);
         data.splice(i, 1);
         localStorage.setItem('products', JSON.stringify(data));
         display();
@@ -377,11 +389,11 @@ function exportToCSV() {
     }
 
     let csvContent = "data:text/csv;charset=utf-8,";
-    csvContent += "Name,Price,Discount,Ads,Taxs,Total,Category,Quantity,Customer\n";
+    csvContent += "Name,Price,Discount,Ads,Taxs,Total,Category,Quantity,Customer,Timestamp\n";
     let customers = JSON.parse(localStorage.getItem('customers')) || [];
     data.forEach(product => {
         let customerName = customers[product.customerIndex]?.name || "Unassigned";
-        csvContent += `${product.name},${product.price},${product.discount},${product.ads},${product.taxs},${product.total},${product.category},${product.quantity},${customerName}\n`;
+        csvContent += `${product.name},${product.price},${product.discount},${product.ads},${product.taxs},${product.total},${product.category},${product.quantity},${customerName},${product.timestamp || "N/A"}\n`;
     });
 
     const encodedUri = encodeURI(csvContent);

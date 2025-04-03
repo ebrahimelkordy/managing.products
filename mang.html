@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Products Management</title>
+    <link rel="stylesheet" href="mang.css" />
+  </head>
+  <body>
+    <div id="cruds">
+      <div id="head">
+        <h1>Products Management</h1>
+        <nav>
+          <a href="customers.html">Manage Customers</a>
+        </nav>
+      </div>
+
+      <div id="inputs">
+        <input type="text" id="name" placeholder="name" />
+        <div id="totalprice">
+          <input onkeyup="gettotal()" type="number" id="price" placeholder="price" />
+          <input onkeyup="gettotal()" type="number" id="ads" placeholder="ads" />
+          <input onkeyup="gettotal()" type="number" id="taxs" placeholder="taxs" />
+          <input onkeyup="gettotal()" type="number" id="discount" placeholder="discount" />
+          <div id="total"></div>
+        </div>
+        <input type="number" id="quantity" placeholder="quantity" />
+        <input type="text" id="category" placeholder="category" />
+        <button id="creat">add</button>
+        <button id="clear" onclick="deletall()">Clear All</button>
+        <button onclick="exportToCSV()">Export to CSV</button>
+        <div class="tdf">
+          <input type="text" onkeyup="searchpoint(this.value)" id="search" placeholder="search" />
+          <div class="searchbtn">
+            <button id="searchbyname" onclick="searchh(this.id)">by name</button>
+            <button id="searchbycategory" onclick="searchh(this.id)">by category</button>
+          </div>
+        </div>
+      </div>
+      <div id="outputs">
+        <table id="outputsTable">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Price</th>
+              <th>Discount</th>
+              <th>Ads</th>
+              <th>Taxs</th>
+              <th>Total</th>
+              <th>Category</th>
+              <th>Quantity</th>
+              <th>Customer</th>
+              <th>Timestamp</th> <!-- New column for timestamps -->
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="tbody">
+            <!-- ...dynamic content will be inserted here... -->
+          </tbody>
+        </table>
+        <button id="showStock">Show Stock</button>
+      </div>
+    </div>
+    <script src="mang.js"></script>
+  </body>
+</html>
