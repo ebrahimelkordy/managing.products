@@ -22,14 +22,14 @@ function displayCustomers() {
 }
 
 function updateCustomerDropdown() {
-    let customerSelect = document.getElementById('customerSelect');
-    if (customerSelect) {
-        let customers = JSON.parse(localStorage.getItem('customers')) || [];
-        customerSelect.innerHTML = '<option value="">Select Customer</option>';
+    let customerSelects = document.querySelectorAll('[id^="customerSelect_"]'); // Select all dropdowns dynamically
+    let customers = JSON.parse(localStorage.getItem('customers')) || [];
+    customerSelects.forEach(select => {
+        select.innerHTML = '<option value="">Select Customer</option>';
         customers.forEach((customer, index) => {
-            customerSelect.innerHTML += `<option value="${index}">${customer.name}</option>`;
+            select.innerHTML += `<option value="${index}">${customer.name}</option>`;
         });
-    }
+    });
 }
 
 addCustomer.addEventListener('click', () => {
@@ -49,7 +49,7 @@ addCustomer.addEventListener('click', () => {
     customerEmail.value = '';
     customerPhone.value = '';
     displayCustomers();
-    updateCustomerDropdown();
+    updateCustomerDropdown(); // Update dropdowns
 });
 
 function deleteCustomer(index) {
@@ -71,7 +71,7 @@ function deleteAllCustomers() {
 }
 
 function viewCustomerAccount(index) {
-    alert(`Viewing account for customer: ${customerData[index].name}`);
+    window.location.href = `customer_account.html?customerIndex=${index}`;
 }
 
 displayCustomers();

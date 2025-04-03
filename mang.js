@@ -1,26 +1,25 @@
-// f clean data
 let clear = document.getElementById('clear');
 let tmb;
 let productName = document.getElementById('name');
 let price = document.getElementById('price');
 let discount = document.getElementById('discount');
 let ads = document.getElementById('ads');
-let taxs = document.getElementById('taxs'); // updated to match HTML id
+let taxs = document.getElementById('taxs');
 let total = document.getElementById('total');
 let quantity = document.getElementById('quantity');
 let category = document.getElementById('category');
-let description = document.getElementById('description');
 let search = document.getElementById('searchbyname');
-let searchinpot = document.getElementById("search")
-let searchcategory = document.getElementById('searchbycategory')
+let searchinpot = document.getElementById("search");
+let searchcategory = document.getElementById('searchbycategory');
 let creat = document.getElementById('creat');
 let mood = 'creat';
 
-let srmood = 'name'
+let srmood = 'name';
+
 function searchh(id) {
-    if (id == "searchbyname") {
+    if (id === "searchbyname") {
         srmood = "name";
-        searchinpot.placeholder = "search by name";  // Fixed placeholder property
+        searchinpot.placeholder = "search by name";
     } else {
         srmood = "category";
         searchinpot.placeholder = "search by category";
@@ -39,44 +38,99 @@ window.onload = function () {
             behavior: 'smooth'
         });
     } else {
-        window.scrollTo(0, 0); // Fallback if #cruds is not found
+        window.scrollTo(0, 0);
     }
-    display();
+    display(); // Call display to show products on page load
 };
 
-// تحديث دالة generateTableRow لإزالة الصور
-function generateTableRow(product, index) {
-    let customers = JSON.parse(localStorage.getItem('customers')) || [];
-    let customerName = customers[product.customerIndex]?.name || "Unassigned";
-    return `
-        <tr>
-            <td>${product.name}</td>
-            <td>${product.price}</td>
-            <td>${product.discount}</td>
-            <td>${product.ads}</td>
-            <td>${product.taxs}</td>
-            <td>${product.total}</td>
-            <td>${product.category}</td>
-            <td>${product.quantity}</td>
-            <td>${customerName}</td>
-            <td>
-                <button onclick="delet(${index})">delete</button>
-                <button onclick="update(${index})">update</button>
-            </td>
-        </tr>`;
+// Function to get the current timestamp
+function getCurrentTimestamp() {
+    const now = new Date();
+    return now.toLocaleString();
 }
 
-// Simplified search function using the common table generator
-function searchpoint(value) {
-    value = value.trim().toLowerCase();
-    let table = '';
-    for (let i = 0; i < data.length; i++) {
-        if ((srmood === "name" && data[i].name.toLowerCase().includes(value)) ||
-            (srmood === "category" && data[i].category.toLowerCase().includes(value))) {
-            table += generateTableRow(data[i], i);
+// Improved create/update function
+creat.addEventListener('click', function () {
+    if (mood === 'update') {
+        if (tmb !== undefined && tmb >= 0 && tmb < data.length) {
+            let product = {
+                name: productName.value.trim(),
+                price: parseFloat(price.value),
+                discount: parseFloat(discount.value) || 0,
+                ads: parseFloat(ads.value) || 0,
+                taxs: parseFloat(taxs.value) || 0,
+                total: parseFloat(total.innerText.replace("Total Price: ", "")) || 0,
+                quantity: parseInt(quantity.value) || 1,
+                category: category.value.trim(),
+                customerIndex: null,
+                timestamp: getCurrentTimestamp()
+            };
+
+            data[tmb] = product;
+            mood = 'creat';
+            creat.innerHTML = "add";
+            quantity.style.display = 'block';
+            localStorage.setItem('products', JSON.stringify(data));
+            clearInputs();
+            display();
+            showToast("Product updated successfully!", "success");
         }
+    } else {
+        if (!validateInputs()) return;
+
+        let product = {
+            name: productName.value.trim(),
+            price: parseFloat(price.value),
+            discount: parseFloat(discount.value) || 0,
+            ads: parseFloat(ads.value) || 0,
+            taxs: parseFloat(taxs.value) || 0,
+            total: parseFloat(total.innerText.replace("Total Price: ", "")) || 0,
+            quantity: parseInt(quantity.value) || 1,
+            category: category.value.trim(),
+            customerIndex: null,
+            timestamp: getCurrentTimestamp()
+        };
+
+        if (mood === 'creat') {
+            let existingProduct = data.find(p => p.name === product.name && p.category === product.category && p.customerIndex === null);
+
+            if (existingProduct) {
+                if (confirm("Do you want to add the new quantity with the same price as the existing product?")) {
+                    product.price = existingProduct.price;
+                    product.total = (existingProduct.price + (existingProduct.ads || 0) + (existingProduct.taxs || 0) - (existingProduct.discount || 0)) * product.quantity;
+                }
+                existingProduct.quantity += product.quantity;
+                existingProduct.timestamp = getCurrentTimestamp();
+            } else {
+                data.push(product); // Add new product to the array
+            }
+        } else {
+            if (tmb !== undefined && tmb >= 0 && tmb < data.length) {
+                product.quantity = data[tmb].quantity;
+                product.timestamp = getCurrentTimestamp();
+                data[tmb] = product;
+                mood = 'creat';
+                creat.innerHTML = "add";
+                quantity.style.display = 'block';
+            }
+        }
+
+        localStorage.setItem('products', JSON.stringify(data)); // Save updated data to localStorage
+        clearInputs();
+        display(); // Refresh the table to show the new product
     }
-    document.getElementById('tbody').innerHTML = table || '<tr><td colspan="10">No results found</td></tr>';
+});
+
+// Function to clear input fields
+function clearInputs() {
+    productName.value = "";
+    price.value = "";
+    discount.value = "";
+    ads.value = "";
+    taxs.value = "";
+    total.innerText = "";
+    quantity.value = "";
+    category.value = "";
 }
 
 // Improved validation function
@@ -108,7 +162,7 @@ function gettotal() {
         const discountVal = parseFloat(discount.value) || 0;
 
         let totalprice = priceVal + adsVal + taxsVal - discountVal;
-        totalprice = Math.max(0, totalprice); // Ensure total is not negative
+        totalprice = Math.max(0, totalprice);
         total.innerText = "Total Price: " + totalprice.toFixed(2);
     } else {
         total.innerText = "";
@@ -122,71 +176,7 @@ if (localStorage.products != null) {
     data = []; // Ensure the data array is initialized
 }
 
-// Function to get the current timestamp
-function getCurrentTimestamp() {
-    const now = new Date();
-    return now.toLocaleString(); // Format: "MM/DD/YYYY, HH:MM:SS AM/PM"
-}
-
-// Improved create/update function
-creat.addEventListener('click', function () {
-    if (!validateInputs()) return;
-
-    let product = {
-        name: productName.value.trim(),
-        price: parseFloat(price.value),
-        discount: parseFloat(discount.value) || 0,
-        ads: parseFloat(ads.value) || 0,
-        taxs: parseFloat(taxs.value) || 0,
-        total: parseFloat(total.innerText.replace("Total Price: ", "")) || 0,
-        quantity: parseInt(quantity.value) || 1, // Keep the entered quantity
-        category: category.value.trim(),
-        customerIndex: null,
-        timestamp: getCurrentTimestamp() // Add timestamp
-    };
-
-    if (mood === 'creat') {
-        let existingProduct = data.find(p => p.name === product.name && p.category === product.category && p.customerIndex === null);
-
-        if (existingProduct) {
-            if (confirm("Do you want to add the new quantity with the same price as the existing product?")) {
-                product.price = existingProduct.price; // Use the existing product's price
-                product.total = (existingProduct.price + (existingProduct.ads || 0) + (existingProduct.taxs || 0) - (existingProduct.discount || 0)) * product.quantity;
-            }
-            existingProduct.quantity += product.quantity; // Add new quantity to existing product
-            existingProduct.timestamp = getCurrentTimestamp(); // Update timestamp
-        } else {
-            data.push(product); // Add new product to the array
-        }
-    } else {
-        if (tmb !== undefined && tmb >= 0 && tmb < data.length) {
-            product.quantity = data[tmb].quantity; // Preserve the original quantity
-            product.timestamp = getCurrentTimestamp(); // Update timestamp
-            data[tmb] = product;
-            mood = 'creat';
-            creat.innerHTML = "add";
-            quantity.style.display = 'block';
-        }
-    }
-
-    localStorage.setItem('products', JSON.stringify(data)); // Save updated data to localStorage
-    clearInputs();
-    display(); // Refresh the table to show the new product
-});
-
-// Function to clear input fields
-function clearInputs() {
-    productName.value = "";
-    price.value = "";
-    discount.value = "";
-    ads.value = "";
-    taxs.value = "";
-    total.innerText = "";
-    quantity.value = "";
-    category.value = "";
-}
-
-// Deduct product quantity from stock when assigning to a customer
+// Function to assign product to a customer
 function assignProductToCustomer(productIndex, customerIndex, quantity) {
     if (isNaN(customerIndex) || customerIndex < 0 || customerIndex >= JSON.parse(localStorage.getItem('customers')).length) {
         alert("Please select a valid customer.");
@@ -221,60 +211,21 @@ function assignProductToCustomer(productIndex, customerIndex, quantity) {
 
 // Function to display available stock for a product
 function showAvailableStock(productIndex) {
-    const product = data[productIndex];
-    alert(`Available stock for "${product.name}": ${product.quantity}`);
-}
-
-// Update product quantity directly from the table
-function updateProductQuantity(index, newQuantity) {
-    if (newQuantity < 0) {
-        alert("Quantity cannot be negative!");
+    if (productIndex < 0 || productIndex >= data.length) {
+        alert("Invalid product index");
         return;
     }
 
-    data[index].quantity = newQuantity;
-
-    if (newQuantity === 0) {
-        data.splice(index, 1); // Remove product if quantity is zero
+    const product = data[productIndex];
+    if (product.customerIndex !== null) {
+        alert(`This product is already assigned to a customer.`);
+        return;
     }
 
-    localStorage.setItem('products', JSON.stringify(data));
-    display();
-    showToast("Product quantity updated successfully!");
+    alert(`Available stock for "${product.name}": ${product.quantity}`);
 }
 
-// Add loading indicator
-function showLoading() {
-    let loader = document.createElement('div');
-    loader.className = 'loader';
-    loader.innerHTML = 'Loading...';
-    document.body.appendChild(loader);
-    setTimeout(() => loader.remove(), 500);
-}
-
-// Add count of products
-function showCount() {
-    let count = document.getElementById('count');
-    if (!count) {
-        count = document.createElement('div');
-        count.id = 'count';
-        document.getElementById('tbody').before(count);
-    }
-    count.innerHTML = `Total Products: ${data.length}`;
-}
-
-// Add sort functionality 
-function sortData(column) {
-    data.sort((a, b) => {
-        if (column === 'price' || column === 'total') {
-            return parseFloat(a[column]) - parseFloat(b[column]);
-        }
-        return a[column].localeCompare(b[column]);
-    });
-    display();
-}
-
-// Optimized display function
+// Ensure the display function is properly implemented
 function display() {
     let table = "";
     let customers = JSON.parse(localStorage.getItem('customers')) || [];
@@ -316,25 +267,55 @@ function display() {
     });
 
     tbody.innerHTML = table || '<tr><td colspan="11">No products found</td></tr>';
-    showCount();
 }
 
-// Initial display of data
-display();
-
-// Update delete function to log timestamps
-function delet(i) {
-    if (!confirm('Are you sure you want to delete this item?')) return;
-
-    if (i >= 0 && i < data.length) {
-        console.log(`Deleted product: ${data[i].name} at ${getCurrentTimestamp()}`);
-        data.splice(i, 1);
-        localStorage.setItem('products', JSON.stringify(data));
-        display();
-        showToast("Product deleted successfully!", "error");
+// Ensure the display function is called after loading data
+window.onload = function () {
+    const cruds = document.getElementById('cruds');
+    if (cruds) {
+        cruds.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+        });
+    } else {
+        window.scrollTo(0, 0);
     }
+    display(); // Call display to show products on page load
+};
+
+// Fix the "Update" functionality
+function update(i) {
+    if (i < 0 || i >= data.length) {
+        alert('Invalid product index');
+        return;
+    }
+
+    mood = 'update';
+    tmb = i;
+    const product = data[i];
+
+    // Populate the input fields with the selected product's data
+    productName.value = product.name;
+    price.value = product.price;
+    discount.value = product.discount;
+    ads.value = product.ads;
+    taxs.value = product.taxs;
+    total.innerText = `Total Price: ${product.total}`;
+    category.value = product.category;
+    quantity.value = product.quantity;
+
+    // Change the button text to "Update"
+    creat.innerHTML = 'Update';
+    quantity.style.display = 'none';
+
+    // Scroll to the top of the page
+    window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+    });
 }
 
+// Fix the "Clear All" functionality
 function deletall() {
     if (data.length === 0) {
         alert("No data to delete");
@@ -345,43 +326,11 @@ function deletall() {
         data = [];
         localStorage.setItem('products', JSON.stringify(data));
         display();
+        showToast("All products cleared successfully!", "success");
     }
 }
 
-// Improved update function
-function update(i) {
-    if (i < 0 || i >= data.length) {
-        alert('Invalid product index');
-        return;
-    }
-
-    // تحديث mood قبل أي شيء آخر
-    mood = 'update';
-    tmb = i;
-    const product = data[i];
-
-    // تحديث الحقول بالقيم الصحيحة
-    productName.value = product.name;
-    price.value = product.price;
-    discount.value = product.discount;
-    ads.value = product.ads;
-    taxs.value = product.taxs;
-    category.value = product.category;
-
-    gettotal(); // تحديث الإجمالي
-
-    // إخفاء حقل الكمية وتغيير نص الزر
-    quantity.style.display = 'none';
-    creat.innerHTML = 'Update';
-
-    // التمرير إلى أعلى الصفحة
-    window.scrollTo({
-        top: 0,
-        behavior: 'smooth'
-    });
-}
-
-// Function to export data to CSV
+// Fix the "Export to CSV" functionality
 function exportToCSV() {
     if (data.length === 0) {
         alert("No data to export");
@@ -392,7 +341,7 @@ function exportToCSV() {
     csvContent += "Name,Price,Discount,Ads,Taxs,Total,Category,Quantity,Customer,Timestamp\n";
     let customers = JSON.parse(localStorage.getItem('customers')) || [];
     data.forEach(product => {
-        let customerName = customers[product.customerIndex]?.name || "Unassigned";
+        let customerName = product.customerIndex !== null ? customers[product.customerIndex]?.name || "Unassigned" : "In Stock";
         csvContent += `${product.name},${product.price},${product.discount},${product.ads},${product.taxs},${product.total},${product.category},${product.quantity},${customerName},${product.timestamp || "N/A"}\n`;
     });
 
@@ -403,17 +352,4 @@ function exportToCSV() {
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
-}
-
-// Function to show toast notifications
-function showToast(message, type = "success") {
-    const toast = document.createElement("div");
-    toast.className = `toast ${type}`;
-    toast.innerText = message;
-    document.body.appendChild(toast);
-
-    setTimeout(() => {
-        toast.style.opacity = "0";
-        setTimeout(() => toast.remove(), 500);
-    }, 3000);
 }
